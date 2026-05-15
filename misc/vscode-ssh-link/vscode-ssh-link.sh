@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # PostToolUse hook: prints vscode:// remote link after file editing tools
 # Usage: bash vscode-ssh-link.sh <hostname>
 
@@ -50,7 +50,10 @@ uri_path="${file_path#/}"
 # detection doesn't truncate at special characters like spaces, #, ?, &, etc.
 uri_path=$(printf '%s' "$uri_path" | jq -Rr 'split("/") | map(@uri) | join("/")')
 
-# Append line number (default to 1)
+# Append line number (default to 1).
+# Always fall back to :1 — never emit a bare path. Without a line suffix,
+# VS Code's remote handler can interpret the URI as a directory and open it
+# in the explorer instead of as a file, which is jarring/unexpected.
 line_num="${line_num:-1}"
 url="vscode://vscode-remote/ssh-remote+${HOSTNAME}/${uri_path}:${line_num}"
 
