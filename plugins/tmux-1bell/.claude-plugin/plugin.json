@@ -1,5 +1,5 @@
 {
-  "name": "tmux-bell",
+  "name": "tmux-1bell",
   "description": "Ring terminal bell when Claude Code needs attention (tmux-aware)",
   "version": "0.1.1"
 }
