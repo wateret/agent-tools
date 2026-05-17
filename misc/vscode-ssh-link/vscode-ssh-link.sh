@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
-# PostToolUse hook: prints vscode:// remote link after file editing tools
-# Usage: bash vscode-ssh-link.sh <hostname>
-
-if [ -z "$1" ]; then
-  echo "Error: hostname argument required" >&2
-  exit 1
-fi
+# PostToolUse hook: prints vscode:// link after file editing tools
+# Usage: bash vscode-ssh-link.sh [hostname]
+#   With hostname: generates ssh-remote link (vscode://vscode-remote/ssh-remote+HOST/...)
+#   Without hostname: generates local link (vscode://file/...)
 
 HOSTNAME="$1"
 
@@ -43,18 +40,19 @@ if [ -z "$file_path" ]; then
   exit 0
 fi
 
-# Strip leading slash for the URI path
-uri_path="${file_path#/}"
-
 # Percent-encode each path segment (preserving '/'), so terminal auto-link
 # detection doesn't truncate at special characters like spaces, #, ?, &, etc.
-uri_path=$(printf '%s' "$uri_path" | jq -Rr 'split("/") | map(@uri) | join("/")')
+encoded_path=$(printf '%s' "${file_path#/}" | jq -Rr 'split("/") | map(@uri) | join("/")')
 
-# Append line number (default to 1).
 # Always fall back to :1 — never emit a bare path. Without a line suffix,
 # VS Code's remote handler can interpret the URI as a directory and open it
 # in the explorer instead of as a file, which is jarring/unexpected.
 line_num="${line_num:-1}"
-url="vscode://vscode-remote/ssh-remote+${HOSTNAME}/${uri_path}:${line_num}"
+
+if [ -n "$HOSTNAME" ]; then
+  url="vscode://vscode-remote/ssh-remote+${HOSTNAME}/${encoded_path}:${line_num}"
+else
+  url="vscode://file/${encoded_path}:${line_num}"
+fi
 
 echo "{\"systemMessage\": \"${url}\"}"

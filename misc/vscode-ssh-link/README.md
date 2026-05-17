@@ -4,9 +4,13 @@ When Claude Code edits or references files, this setup automatically outputs cli
 
 ## Quick Install
 
-Easiest path: open Claude Code in this repo and ask it to install the setup, pointing it at this README. Example prompt:
+Easiest path: open Claude Code in this repo and ask it to install the setup, pointing it at this README. Example prompts:
 
+**SSH remote:**
 > Install https://github.com/wateret/agent-tools/tree/main/misc/vscode-ssh-link . My SSH host is `<YOUR_HOSTNAME>`.
+
+**Local:**
+> Install https://github.com/wateret/agent-tools/tree/main/misc/vscode-ssh-link for local use.
 
 If you'd rather do it by hand, follow the two sections below.
 
@@ -50,7 +54,7 @@ chmod +x ~/.claude/scripts/vscode-ssh-link.sh
 }
 ```
 
-> Replace `YOUR_HOSTNAME` with your SSH remote host name (e.g., `devcc`). This must match the `Host` entry in your `~/.ssh/config`.
+For **local** use, omit the hostname: `bash ~/.claude/scripts/vscode-ssh-link.sh`
 
 ## 2. CLAUDE.md Instruction (Links in Text Responses)
 
