@@ -1,0 +1,20 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "wateret-agent-tools",
+  "description": "Personal Claude Code plugins by Hanjoung Lee",
+  "owner": {
+    "name": "Hanjoung Lee",
+    "email": "waterets@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "tmux-1bell",
+      "description": "Ring terminal bell when Claude Code needs attention (tmux-aware)",
+      "author": {
+        "name": "Hanjoung Lee"
+      },
+      "source": "./plugins/tmux-1bell",
+      "category": "productivity"
+    }
+  ]
+}
