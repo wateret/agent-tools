@@ -7,7 +7,7 @@ Tools and configurations for AI coding agents (Claude Code only for now)
 Add marketplace:
 
 ```bash
-claude plugins marketplace add git@github.com:wateret/agent-tools
+claude plugins marketplace add https://github.com/wateret/agent-tools.git
 ````
 
 Install a plugin:
