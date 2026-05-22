@@ -6,20 +6,13 @@ Tools and configurations for AI coding agents (Claude Code only for now)
 
 | Plugin | Description |
 |--------|-------------|
-| [tmux-1bell](./plugins/tmux-1bell/) | Rings the terminal bell when Claude needs attention, only when you've switched away from the Claude pane |
+| [tmux-1bell](./plugins/tmux-1bell/) | Rings the terminal bell when Claude needs attention |
 
 ### Install
 
-Add marketplace:
-
 ```bash
-claude plugins marketplace add https://github.com/wateret/agent-tools.git
-```
-
-Install a plugin:
-
-```bash
-claude plugin install tmux-1bell@wateret-agent-tools
+claude plugins marketplace add https://github.com/wateret/agent-tools.git # Add marketplace
+claude plugin install tmux-1bell@wateret-agent-tools # Install a plugin
 ```
 
 ## Misc tools
