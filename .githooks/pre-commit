@@ -1,0 +1,24 @@
+#!/bin/sh
+# Check that plugin.json version is bumped when any plugin file is staged.
+
+failed=0
+
+for plugin_dir in $(git diff --cached --name-only | grep '^plugins/' | cut -d/ -f1-2 | sort -u); do
+  manifest="$plugin_dir/.claude-plugin/plugin.json"
+
+  # Skip if the changed file is the manifest itself or outside a plugin root
+  if [ ! -f "$manifest" ]; then
+    continue
+  fi
+
+  # Check if version changed in the staged manifest
+  staged_version=$(git show ":$manifest" 2>/dev/null | grep '"version"' | grep -o '"[0-9][^"]*"' | tr -d '"')
+  head_version=$(git show "HEAD:$manifest" 2>/dev/null | grep '"version"' | grep -o '"[0-9][^"]*"' | tr -d '"')
+
+  if [ "$staged_version" = "$head_version" ]; then
+    echo "error: $plugin_dir changed but plugin.json version not bumped (currently $head_version)"
+    failed=1
+  fi
+done
+
+exit $failed
