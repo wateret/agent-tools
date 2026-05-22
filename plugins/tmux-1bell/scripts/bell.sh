@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 exec 0</dev/null
 if [ -n "$TMUX_PANE" ]; then
   WIN=$(tmux display-message -t "$TMUX_PANE" -p '#{window_id}' 2>/dev/null)
