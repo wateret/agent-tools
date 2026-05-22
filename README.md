@@ -23,3 +23,4 @@ Non-plugin tools — manual install, see each README for details.
 |------|-------------|
 | [vscode-ssh-link](./misc/vscode-ssh-link/) | Outputs clickable `vscode://` links in the terminal when Claude edits or mentions files |
 | [cc-yolo](./misc/cc-yolo/) | Claude Code utilization stats — active vs idle time from session files |
+| [tmux-claude-status](./misc/tmux-claude-status/) | Shows colored Claude session status icons in the tmux status bar |
