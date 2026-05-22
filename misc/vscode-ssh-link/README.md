@@ -1,6 +1,6 @@
 # [Claude Code] VS Code SSH Link — One-Click File Navigation
 
-When Claude Code edits or references files, this setup automatically outputs clickable `vscode://` links in the terminal. It consists of two components.
+When Claude Code edits or references files, this setup automatically outputs clickable `vscode://` links in the terminal. It consists of two components, also usable for local env.
 
 ## Quick Install
 
@@ -15,6 +15,8 @@ Easiest path: open Claude Code in this repo and ask it to install the setup, poi
 If you'd rather do it by hand, follow the two sections below.
 
 ## 1. PostToolUse Hook (Automatic Link on File Tool Use)
+
+![PostToolUse hook outputting a vscode:// link after a file edit](./screenshot_fileposthook.png)
 
 Automatically outputs a `vscode://` link after tools that operate on files: `Edit`, `Write`, `NotebookEdit`, `Read`, and `Grep`.
 
@@ -58,7 +60,9 @@ For **local** use, omit the hostname: `bash ~/.claude/scripts/vscode-ssh-link.sh
 
 ## 2. CLAUDE.md Instruction (Links in Text Responses)
 
-The hook only fires on tool use. To make Claude include links when **mentioning** code locations in prose, add a strict rule to your CLAUDE.md. The wording below is intentionally aggressive — softer phrasing ("always include...") is routinely ignored.
+![Claude Code response with clickable VS Code links in prose](./screenshot_claudeinst.png)
+
+The hook only fires on tool use. To make Claude include links when **mentioning** code locations in prose, add a strict rule to your CLAUDE.md. The wording below is intentionally aggressive — softer phrasing ("always include...") is routinely ignored. Even so, compliance is not 100%.
 
 The template below uses the SSH-remote URL form. For **local** use, replace `vscode://vscode-remote/ssh-remote+<HOSTNAME>/` with `vscode://file/` and drop the hostname rule.
 
