@@ -8,7 +8,19 @@
 WINDOW_TARGET="$1"
 [ -z "$WINDOW_TARGET" ] && exit 0
 
-ICON="󰚩"
+NERD_FONT="${NERD_FONT:-1}"
+
+if [ "$NERD_FONT" -eq 1 ]; then
+  ICON_IDLE="󰚩"
+  ICON_BUSY="󱚝"
+  ICON_WAITING="󱚟"
+  ICON_SHELL="󱚝"
+else
+  ICON_IDLE="."
+  ICON_BUSY="!"
+  ICON_WAITING="?"
+  ICON_SHELL="~"
+fi
 CACHE_FILE="/tmp/tmux-claude-icons-${USER}"
 CACHE_TTL=5
 SESSIONS_DIR="${HOME}/.claude/sessions"
@@ -88,13 +100,13 @@ if [ -f "$CACHE_FILE" ]; then
   while IFS=' ' read -r wt _pane_idx status; do
     [ "$wt" != "$WINDOW_TARGET" ] && continue
     if [ "$status" = "busy" ]; then
-      output="${output}#[fg=${COLOR_BUSY}]󱚝"
+      output="${output}#[fg=${COLOR_BUSY}]${ICON_BUSY}"
     elif [ "$status" = "waiting" ]; then
-      output="${output}#[fg=${COLOR_WAITING}]󱚟"
+      output="${output}#[fg=${COLOR_WAITING}]${ICON_WAITING}"
     elif [ "$status" = "shell" ]; then
-      output="${output}#[fg=${COLOR_SHELL}]󱚝"
+      output="${output}#[fg=${COLOR_SHELL}]${ICON_SHELL}"
     else
-      output="${output}#[fg=${COLOR_IDLE}]${ICON}"
+      output="${output}#[fg=${COLOR_IDLE}]${ICON_IDLE}"
     fi
   done < "$CACHE_FILE"
   if [ -n "$output" ]; then

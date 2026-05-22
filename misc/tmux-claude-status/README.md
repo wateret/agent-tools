@@ -1,6 +1,6 @@
-# [Claude Code] tmux Claude Status
+# Claude Status for tmux status bar
 
-Shows a colored Claude Code icon (󰚩) in the tmux status bar for each window running an active Claude session — color indicates the session state.
+Shows a colored Claude Code icon in the tmux status bar for each window running an active Claude session — color indicates the session state.
 
 | Color | State |
 |-------|-------|
@@ -21,8 +21,3 @@ set -g window-status-current-format "... #(s=\$HOME/path/to/agent-tools/misc/tmu
 If the script is not found the format string silently outputs nothing.
 
 The script caches results for 5 seconds to avoid hammering the filesystem on every status bar refresh.
-
-## Prerequisites
-
-- tmux
-- A Nerd Font (for the 󰚩 icon)
