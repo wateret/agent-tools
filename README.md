@@ -2,20 +2,31 @@
 
 Tools and configurations for AI coding agents (Claude Code only for now)
 
-## Install a plugin (claude)
+## Plugins
+
+| Plugin | Description |
+|--------|-------------|
+| [tmux-1bell](./plugins/tmux-1bell/) | Rings the terminal bell when Claude needs attention, only when you've switched away from the Claude pane |
+
+### Install
 
 Add marketplace:
 
 ```bash
 claude plugins marketplace add https://github.com/wateret/agent-tools.git
-````
+```
 
 Install a plugin:
 
 ```bash
-claude plugin install tmux-1bell@wateret-agent-tools # the only plugin now
+claude plugin install tmux-1bell@wateret-agent-tools
 ```
 
-## Install a misc tool
+## Misc tools
 
-Non-plugin misc tools. See `README.md` of each directory.
+Non-plugin tools — manual install, see each README for details.
+
+| Tool | Description |
+|------|-------------|
+| [vscode-ssh-link](./misc/vscode-ssh-link/) | Outputs clickable `vscode://` links in the terminal when Claude edits or mentions files |
+| [cc-yolo](./misc/cc-yolo/) | Claude Code utilization stats — active vs idle time from session files |
