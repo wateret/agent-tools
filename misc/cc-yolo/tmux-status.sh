@@ -39,7 +39,7 @@ YOLO_ARGS="--today"
 
 # Return cached result if fresh enough
 if [[ -f "$CACHE" ]]; then
-  age=$(($(date +%s) - $(stat -c %Y "$CACHE" 2>/dev/null || echo 0)))
+  age=$(($(date +%s) - $(date -r "$CACHE" +%s 2>/dev/null || echo 0)))
   if ((age < TTL)); then
     cat "$CACHE"
     exit 0
