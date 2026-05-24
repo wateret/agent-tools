@@ -69,10 +69,9 @@ The template below uses the SSH-remote URL form. For **local** use, replace `vsc
 ````markdown
 ## Referencing Code Locations
 
-**MANDATORY — NO EXCEPTIONS.** Every single mention of a file path in your response MUST be rendered as a VS Code remote link in the format below. This is not optional, not "when convenient", and not "when the user asks". If you write a filename or path in prose, code fence label, list item, summary, or anywhere else visible to the user, it MUST be a clickable link.
+**MANDATORY — NO EXCEPTIONS.** Every mention of an existing file path MUST be rendered as a VS Code remote link — in prose, code fence labels, list items, summaries, or anywhere visible to the user. Do NOT link files that do not exist yet (planned or proposed files).
 
-**This applies to (non-exhaustive):**
-- Referencing code locations or snippets
+**This applies to:**
 - After ANY use of Read / Edit / Write / Glob / Grep tools — link the file you touched
 - Mentioning a file in a plan, summary, status update, or end-of-turn recap
 - Naming a file in a question to the user ("should I edit X?")
@@ -81,9 +80,9 @@ The template below uses the SSH-remote URL form. For **local** use, replace `vsc
 **Forbidden patterns — these are violations:**
 - Bare path: `src/components/Button.tsx`
 - Path-with-line in prose: `Button.tsx:42`
-- Any file mention without the `vscode://...` link
+- Any mention of an existing file without the `vscode://...` link
 
-**If you are about to send a response, scan it first.** Every path-shaped token must be a VS Code remote link. If even one is bare, fix it before sending.
+**Before sending, scan your response.** Every path-shaped token for an existing file must be a link.
 
 Format:
 
