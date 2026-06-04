@@ -446,7 +446,7 @@ def compute_session_stats(session_id, records, live_sessions,
 
     # Use session status from sessions/*.json to determine if actively working
     session_status = live_sessions.get(session_id, {}).get("status", "")
-    is_running = is_live and session_status == "busy"
+    is_running = is_live and session_status in ("busy", "shell")
     is_idle = is_live and not is_running
 
     # For running sessions with an open turn, add a partial turn up to now
