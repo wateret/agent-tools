@@ -15,6 +15,15 @@
       },
       "source": "./plugins/tmux-1bell",
       "category": "productivity"
+    },
+    {
+      "name": "tmux-buddy",
+      "description": "Help Claude Code work alongside humans inside tmux: branch sessions into new panes, watch shell pane state, wait on commands.",
+      "author": {
+        "name": "Hanjoung Lee"
+      },
+      "source": "./plugins/tmux-buddy",
+      "category": "productivity"
     }
   ]
 }
