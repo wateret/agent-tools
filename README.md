@@ -7,6 +7,7 @@ Tools and configurations for AI coding agents (Claude Code only for now)
 | Tool | Type | Description |
 |------|------|-------------|
 | [tmux-1bell](./plugins/tmux-1bell/) | Claude Code plugin | Rings the terminal bell when Claude needs attention |
+| [tmux-buddy](./plugins/tmux-buddy/) | Claude Code plugin | Lets Claude work alongside you in shared tmux panes — branch sessions, run/wait on commands, share interactive prompts |
 | [vscode-ssh-link](./misc/vscode-ssh-link/) | Misc | Outputs clickable `vscode://` links in the terminal when Claude edits or mentions files |
 | [cc-yolo](./misc/cc-yolo/) | Misc | Claude Code utilization stats — active time and so on, from session files |
 | [tmux-claude-status ↗](https://github.com/wateret/tmux-claude-status) | tmux plugin | Shows Claude Code session status icons in the tmux status bar |

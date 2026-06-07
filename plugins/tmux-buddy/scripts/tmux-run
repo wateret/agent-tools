@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Usage: tmux-run <target> <command...>
+#
+# Send a command to a tmux pane and block until it finishes. Uses tmux's
+# own wait-for channel so completion is event-driven (no polling, no
+# perceptible latency).
+#
+# How it works: the command sent to the pane is wrapped as
+#   <command>; tmux wait-for -S <unique-channel>
+# The trailing `;` (not `&&`) ensures the signal fires whether the
+# command succeeds or fails. This script then blocks on `tmux wait-for`
+# until the pane sends the signal.
+#
+# The wrapping is visible in the user's tmux pane (they will see
+# `; tmux wait-for -S buddy-...` after their command). That's expected.
+#
+# This script does NOT capture exit code. To inspect results, run
+# `tmux capture-pane -p -t <target> -S -100 | tail -50` after it returns.
+#
+# Use this for commands the agent itself sends. For commands the human
+# typed (or externally launched work), use tmux-wait instead.
+#
+# Exit:
+#   0 = command finished (success or failure of the command)
+#   2 = pane not found / send-keys failed
+#  64 = usage error
+
+target="${1:?usage: tmux-run <target> <command...>}"
+shift
+if [ $# -eq 0 ]; then
+  echo "usage: tmux-run <target> <command...>" >&2
+  exit 64
+fi
+cmd="$*"
+
+# Validate pane exists. tmux display-message returns exit 0 even for
+# dead panes (just writes the error to stderr), so check the captured
+# pane_id is non-empty.
+pane_id=$(tmux display-message -t "$target" -p '#{pane_id}' 2>/dev/null)
+[ -n "$pane_id" ] || exit 2
+
+# Unique channel per call. Avoid colons (tmux channel names are loose
+# but keep it simple).
+ch="tmux-buddy-$$-$(date +%s)-$RANDOM"
+
+tmux send-keys -t "$target" "$cmd; tmux wait-for -S $ch" Enter || exit 2
+
+tmux wait-for "$ch"

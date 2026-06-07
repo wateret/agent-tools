@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Usage: tmux-capture <target> [lines]
+#
+# Read a pane's recent output with sensible defaults for LLM context:
+#   - 200 lines of scrollback by default (override with $2)
+#   - ANSI escape sequences stripped
+#   - runs of blank lines collapsed (cat -s)
+#
+# Equivalent bare command:
+#   tmux capture-pane -p -t <target> -S -<lines> | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' | cat -s
+#
+# Exit:
+#   0 = ok (output on stdout)
+#   2 = pane not found
+
+target="${1:?usage: tmux-capture <target> [lines]}"
+lines="${2:-200}"
+
+# Validate pane exists. tmux display-message returns exit 0 even for
+# dead panes (just writes the error to stderr), so check the captured
+# pane_id is non-empty.
+pane_id=$(tmux display-message -t "$target" -p '#{pane_id}' 2>/dev/null)
+[ -n "$pane_id" ] || exit 2
+
+tmux capture-pane -p -t "$target" -S -"$lines" \
+  | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' \
+  | cat -s

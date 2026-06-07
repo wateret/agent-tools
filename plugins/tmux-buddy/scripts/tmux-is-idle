@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Usage: tmux-is-idle <target>
+#
+# Decide whether a tmux pane's shell is at a prompt (idle) or running
+# something in the foreground (busy). Compares the controlling tty's
+# foreground process group to the shell's own pgid:
+#
+#   pgrp == tpgid  ->  shell owns the tty (prompt) -> idle
+#   pgrp != tpgid  ->  some child has the tty       -> busy
+#
+# Background jobs (`sleep 100 &`) leave the shell in the foreground, so
+# they correctly show as idle. Foreground TUIs (vim, less) show as busy
+# because the shell is not at a prompt.
+#
+# Limitation: a shell blocked inside a builtin (wait, read) shows as idle
+# because no fork happened. Acceptable for typical dev workflows.
+#
+# Exit:
+#   0 = idle (shell prompt)
+#   1 = busy (foreground command running)
+#   2 = pane not found / no shell pid
+
+target="${1:?usage: tmux-is-idle <target>}"
+
+pid=$(tmux display-message -p -t "$target" '#{pane_pid}' 2>/dev/null) || exit 2
+[ -n "$pid" ] || exit 2
+
+case "$(uname -s)" in
+  Linux)
+    # /proc/<pid>/stat: field 5 = pgrp, field 8 = tpgid
+    awk '{exit !($5==$8)}' "/proc/$pid/stat" 2>/dev/null && exit 0 || exit 1
+    ;;
+  Darwin|*)
+    line=$(ps -o pgid=,tpgid= -p "$pid" 2>/dev/null) || exit 2
+    [ -n "$line" ] || exit 2
+    read -r pgid tpgid <<<"$line"
+    [ "$pgid" = "$tpgid" ] && exit 0 || exit 1
+    ;;
+esac

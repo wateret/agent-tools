@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Usage: tmux-wait <target> [timeout_seconds]
+#
+# Block until the pane becomes idle (shell prompt). Polls tmux-is-idle.
+# Use this for commands the agent did not start itself — anything the
+# human typed directly, externally launched work, or a pane that was
+# adopted mid-conversation. For commands the agent sends, prefer
+# tmux-run, which gets a 0-latency completion signal from tmux.
+#
+# Exit:
+#   0 = pane became idle
+#   1 = timeout
+#   2 = pane died / not found
+
+target="${1:?usage: tmux-wait <target> [timeout]}"
+timeout="${2:-300}"
+interval="${TMUX_WAIT_INTERVAL:-1}"
+script_dir="$(cd "$(dirname "$0")" && pwd)"
+
+deadline=$(( $(date +%s) + timeout ))
+while [ "$(date +%s)" -lt "$deadline" ]; do
+  "$script_dir/tmux-is-idle" "$target"
+  rc=$?
+  [ $rc -eq 0 ] && exit 0
+  [ $rc -eq 2 ] && exit 2
+  sleep "$interval"
+done
+exit 1
