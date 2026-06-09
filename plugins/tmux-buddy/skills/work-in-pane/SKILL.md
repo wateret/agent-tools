@@ -109,6 +109,11 @@ command would swallow our keystrokes into its stdin, and a subsequent
 unsignaled forever (silent hang). Set `TMUX_RUN_FORCE=1` to bypass when
 you genuinely want the queued-after-current behavior.
 
+When you hit exit `3`, **surface it to the user**. Capture the target
+pane to show what's running there (so they know *why* it was busy), then
+ask whether to wait, target a different pane, or override. Don't silently
+move on — the user can't see the refusal otherwise.
+
 **Commands the human typed, or anything you did not wrap → `tmux-wait`.**
 Polls `tmux-is-idle` once per second (configurable via
 `TMUX_WAIT_INTERVAL`). Default timeout 300 s, override with the second
