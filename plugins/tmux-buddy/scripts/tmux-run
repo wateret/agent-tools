@@ -23,7 +23,14 @@
 # Exit:
 #   0 = command finished (success or failure of the command)
 #   2 = pane not found / send-keys failed
+#   3 = pane is busy (refused to send)
 #  64 = usage error
+#
+# Refuses to send to a busy pane. Sending into a foreground command's
+# stdin queues the text — if the user then ^C's that command, the queued
+# text is dropped along with the input line, leaving this script's
+# wait-for channel forever unsignaled. Use tmux-is-idle yourself first if
+# you really want to override this guard (e.g. via TMUX_RUN_FORCE=1).
 
 target="${1:?usage: tmux-run <target> <command...>}"
 shift
@@ -38,6 +45,15 @@ cmd="$*"
 # pane_id is non-empty.
 pane_id=$(tmux display-message -t "$target" -p '#{pane_id}' 2>/dev/null)
 [ -n "$pane_id" ] || exit 2
+
+# Refuse to send to a busy pane unless explicitly forced.
+if [ -z "$TMUX_RUN_FORCE" ]; then
+  here="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+  if [ -x "$here/tmux-is-idle" ] && ! "$here/tmux-is-idle" "$target" >/dev/null 2>&1; then
+    echo "tmux-run: pane $target is busy; refusing to send. Set TMUX_RUN_FORCE=1 to override." >&2
+    exit 3
+  fi
+fi
 
 # Unique channel per call. Avoid colons (tmux channel names are loose
 # but keep it simple).

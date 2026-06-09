@@ -103,6 +103,12 @@ see that suffix in their pane. That is expected; mention it in passing if
 they ask. `tmux-run` exits as soon as the command returns. It does not
 capture exit code — read results with `tmux capture-pane`.
 
+`tmux-run` refuses (exit `3`) if the target pane is busy — a foreground
+command would swallow our keystrokes into its stdin, and a subsequent
+^C from the human cancels that input line, leaving our wait-for channel
+unsignaled forever (silent hang). Set `TMUX_RUN_FORCE=1` to bypass when
+you genuinely want the queued-after-current behavior.
+
 **Commands the human typed, or anything you did not wrap → `tmux-wait`.**
 Polls `tmux-is-idle` once per second (configurable via
 `TMUX_WAIT_INTERVAL`). Default timeout 300 s, override with the second
@@ -112,6 +118,25 @@ arg: `tmux-wait %15 600`. Exit codes: `0` became idle, `1` timed out,
 Before sending anything, **check that the pane is at a prompt**:
 `tmux-is-idle <pane>`. A `busy` pane may be the human typing, or a command
 already running — sending into either case is destructive.
+
+## Long-running tmux-run — wrap in a background Bash task, never `&`
+
+`tmux-run` blocks until its wait-for channel fires. For long-running
+work (build, test loops, anything taking minutes) two patterns are
+correct:
+
+- **Foreground**: just call `tmux-run %X "<cmd>"` from a normal Bash
+  invocation. Fine when total wall-time fits the agent's tool timeout.
+
+- **Background task**: invoke `tmux-run %X "<cmd>"` inside a Bash tool
+  call with `run_in_background: true`. The wrapper stays as the task's
+  foreground child; when the pane signals the channel, the wrapper
+  exits, the task exits, and you get a task-notification.
+
+The **anti-pattern** is `tmux-run %X "<cmd>" &` from a foreground Bash.
+The wrapper detaches and reparents to PID 1; nothing waits on it, no
+notification fires when the pane finishes. You will not learn the
+command is done until you actively check.
 
 ## Reading output
 
