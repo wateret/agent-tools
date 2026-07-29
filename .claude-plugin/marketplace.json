@@ -24,6 +24,15 @@
       },
       "source": "./plugins/tmux-buddy",
       "category": "productivity"
+    },
+    {
+      "name": "vscode-ssh-link",
+      "description": "Auto-emit vscode:// links after file tools and inject a system-prompt rule so Claude includes vscode:// links when mentioning file paths in prose.",
+      "author": {
+        "name": "Hanjoung Lee"
+      },
+      "source": "./plugins/vscode-ssh-link",
+      "category": "productivity"
     }
   ]
 }
