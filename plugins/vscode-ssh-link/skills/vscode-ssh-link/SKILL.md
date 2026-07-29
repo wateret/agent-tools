@@ -6,9 +6,17 @@ description: >
   cues like "enable vscode links", "fix bare paths", "why isn't this a
   link", or a reply containing an unlinked file mention.
 license: MIT
+allowed-tools: Bash(*)
 ---
 
 # vscode-ssh-link
+
+## Resolved link settings (this session)
+
+- url_prefix: !`if [ -n "$VSCODE_SSH_LINK_HOST" ]; then echo "vscode://vscode-remote/ssh-remote+$VSCODE_SSH_LINK_HOST/"; else echo "vscode://file/"; fi`
+- label_prefix: !`echo "${VSCODE_SSH_LINK_LABEL_PREFIX:-}"`
+
+Use these two values literally in every link below. Don't re-derive them, don't re-check the environment, don't ask the user for them.
 
 ## Referencing Code Locations
 
@@ -31,15 +39,16 @@ license: MIT
 Format:
 
 ```
-[<label>](__URL_PREFIX__<absolute_file_path>:<line>[:<col>])
+[<label_prefix><label>](<url_prefix><absolute_file_path>:<line>[:<col>])
 ```
 
 - `<absolute_file_path>` — full path without leading `/`, URL-encoded per segment
 - `:<line>` — **always required**. By default, use the earliest relevant line number (e.g. the first line of the function/block being referenced). If no specific line applies, use `1`.
 - `:<col>` — optional column number
 - `<label>` — relative path or filename or anything user-friendly
+- `<label_prefix>` / `<url_prefix>` — the values from "Resolved link settings" above, verbatim
 
-Examples:
+Examples (url_prefix `vscode://file/`, no label_prefix):
 
-[src/main.cpp:42](__URL_PREFIX__home/alice/projects/demo/src/main.cpp:42)
-[notes/draft #1.md](__URL_PREFIX__home/alice/projects/demo/notes/draft%20%231.md:1)
+[src/main.cpp:42](vscode://file/home/alice/projects/demo/src/main.cpp:42)
+[notes/draft #1.md](vscode://file/home/alice/projects/demo/notes/draft%20%231.md:1)

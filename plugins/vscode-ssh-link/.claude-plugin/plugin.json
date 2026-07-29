@@ -1,5 +1,5 @@
 {
   "name": "vscode-ssh-link",
   "description": "Auto-emit vscode:// links after file tools + inject a system-prompt rule that Claude include vscode:// links when mentioning file paths in prose.",
-  "version": "0.1.1"
+  "version": "0.1.3"
 }
