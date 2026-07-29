@@ -1,5 +1,5 @@
 {
   "name": "tmux-buddy",
   "description": "Help Claude Code work alongside humans inside tmux: branch sessions into new panes, watch shell pane state, wait on commands.",
-  "version": "0.1.2"
+  "version": "0.1.3"
 }

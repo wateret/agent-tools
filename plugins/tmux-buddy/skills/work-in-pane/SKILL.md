@@ -25,7 +25,7 @@ live pane. Keep that picture in mind while you work.
 Before sending anything anywhere, see what is already there.
 
 ```bash
-tmux list-panes -F '#{pane_id} #{pane_index} #{pane_active} #{pane_current_command} #{pane_width}x#{pane_height}'
+tmux list-panes -F '#{pane_index} #{pane_id} #{pane_active} #{pane_current_command} #{pane_width}x#{pane_height}'
 ```
 
 This lists panes in the **current window only**, which is the scope you
@@ -41,6 +41,32 @@ From the output, note:
 
 `tmux-is-idle <pane_id>` confirms whether a pane is at a shell prompt:
 exit `0` = idle, `1` = busy, `2` = dead.
+
+### How to refer to panes when talking to the human
+
+The human sees panes by their **pane index** — the small number in the
+status line, e.g. `0`, `1`, `2`. The `%<n>` form (`%17` etc.) is a tmux
+internal id they don't normally look at.
+
+When mentioning a pane in chat, **lead with the pane index** and put the
+`%id` in parentheses if you want to keep it traceable:
+
+> "running the build in pane 1 (`%17`)"
+> "pane 2 (`%19`) is waiting on a sudo password"
+
+Bare `%17` in user-facing prose is wrong — say `pane 1 (%17)` or just
+`pane 1`. Inside scripts and tmux commands, **keep using `%id`** (it's
+stable, see below); the index-first rule is for what you say to the user.
+
+### How to interpret a pane number the human gives you
+
+`%` prefix is the switch:
+
+- **No `%`** ("pane 1") → pane index. Resolve to a `%id` in the current
+  window before passing to scripts: `tmux list-panes -F '#{pane_index} #{pane_id}'`.
+- **With `%`** ("%17") → pane id, use as-is.
+
+Ambiguous? Ask, don't guess.
 
 ## Pattern A — reuse an empty pane
 
@@ -165,9 +191,10 @@ or reset the pane — incorporate what they did into the next step.
 Likewise, if you sent `tmux-run %17 "make install"` and it has been
 running for a while, capture the pane. If the bottom shows something like
 `Password:`, `[sudo] password for user:`, or a 2FA prompt, **do not try to
-type the answer with `send-keys`**. Tell the user out loud:
+type the answer with `send-keys`**. Tell the user out loud, naming the
+pane by its index (with `%id` in parens if useful):
 
-> "%17 is waiting on a sudo password — please type it in that pane."
+> "pane 1 (`%17`) is waiting on a sudo password — please type it in that pane."
 
 Then re-enter the wait. `tmux-run` will return when the command actually
 finishes. If you wrapped with `tmux-run` but want to bail because the
@@ -188,9 +215,12 @@ another agent.
 
 - **`%<n>`** (pane id, e.g. `%17`) is stable for the whole life of that
   pane. Splitting, resizing, moving between windows — id stays. Safe to
-  hold.
-- **Pane index** (`.0`, `.1`), **window index**, even **session name** can
-  change when panes are split, killed, or reorganized. Don't store these.
+  hold and to pass to scripts.
+- **Pane index** (`0`, `1`, `2`) is what the human sees in the status
+  line, but it can change when panes are split, killed, or reorganized.
+  Use it when **talking to the user** ("pane 1"), not for storing or
+  scripting.
+- **Window index** and **session name** can also change. Don't store these.
 - If the tmux server itself restarts, every `%<n>` is invalidated. Rare,
   but if a stored id suddenly returns "pane not found" from
   `tmux display-message`, treat that as the cause.
